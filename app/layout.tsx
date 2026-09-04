@@ -3,10 +3,11 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { BrandMark } from '@/components/BrandMark';
 import { COMPANY, POSITION } from '@/lib/data';
+import { siteUrlOrLocal } from '@/lib/site';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+const siteUrl = siteUrlOrLocal();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

@@ -6,6 +6,7 @@
 // application still succeeds.
 
 import { POSITION } from './data';
+import { siteUrl } from './site';
 
 const ENDPOINT = process.env.CALLMEBOT_ENDPOINT ?? 'https://api.callmebot.com/whatsapp.php';
 const TIMEOUT_MS = 8000;
@@ -39,7 +40,7 @@ function truncate(text: string, limit: number): string {
 }
 
 export function buildMessage(app: ApplicationNotification): string {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, '');
+  const base = siteUrl();
 
   return [
     `NEW APPLICATION ${app.reference}`,
@@ -53,7 +54,7 @@ export function buildMessage(app: ApplicationNotification): string {
     app.experience ? '---' : null,
     app.experience ? `Experience: ${truncate(app.experience, EXPERIENCE_LIMIT)}` : null,
     '---',
-    siteUrl ? `Open: ${siteUrl}/admin` : 'Open the admin page to download the resume.',
+    base ? `Open: ${base}/admin` : 'Open the admin page to download the resume.',
   ]
     .filter((line): line is string => line !== null)
     .join('\n');
