@@ -91,9 +91,7 @@ export default function CareersPage() {
           <strong className="font-semibold text-[#5a4415]">Applicant Safety Notice:</strong>{' '}
           Applicants should independently verify recruitment communications through the
           company&apos;s official channels. No applicant should be required to pay a fee to
-          apply for employment. Training and work equipment are provided at our cost —
-          you will never be asked to buy equipment yourself, or to receive and forward
-          money on our behalf.
+          apply for employment.
         </p>
       </aside>
     </div>
