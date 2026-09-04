@@ -50,7 +50,7 @@ export const POSITION = {
   /** What the company provides to the person hired. */
   provided: [
     'Paid training from the start — we teach the listings, the systems and the way we handle client enquiries, so no real estate background is needed.',
-    'The equipment for the role, supplied and set up for you before your first shift, so you are not paying for anything to get started.',
+    'The equipment for the role, supplied and set up for you before your first shift.',
     'Working hours set in your own US time zone, matched to the clients you look after.',
   ],
 } as const;
