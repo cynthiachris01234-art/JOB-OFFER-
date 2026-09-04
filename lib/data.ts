@@ -35,6 +35,24 @@ export const POSITION = {
     { label: 'Pay Rate', value: '$40 / Hour', emphasis: true },
     { label: 'Experience', value: 'Entry level welcome' },
   ],
+  /** "Why this role exists" — shown above the responsibilities. */
+  purpose: {
+    heading: 'Why we are hiring for this role',
+    body:
+      'Our team works from outside the United States, while a growing share of ' +
+      'our listings and the clients interested in them are based in the US. That ' +
+      'distance shows up as slow replies: an enquiry that arrives during the ' +
+      'American working day can sit until our office opens. This role closes that ' +
+      'gap. Working from a US time zone, you are online while our American clients ' +
+      'are, so questions about our US listings get answered the same day, in local ' +
+      'hours, by someone easy to reach.',
+  },
+  /** What the company provides to the person hired. */
+  provided: [
+    'Paid training from the start — we teach the listings, the systems and the way we handle client enquiries, so no real estate background is needed.',
+    'The equipment for the role, supplied and set up for you before your first shift, so you are not paying for anything to get started.',
+    'Working hours set in your own US time zone, matched to the clients you look after.',
+  ],
 } as const;
 
 /** Time-zone options offered in the application form. */

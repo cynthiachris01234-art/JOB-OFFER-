@@ -49,10 +49,25 @@ export default function CareersPage() {
         </dl>
       </section>
 
+      {/* ── Why the role exists ──────────────────────────────────────────── */}
+      <section className="panel mt-6 p-6 md:p-8">
+        <h2 className="text-base font-semibold text-ink-strong">
+          {POSITION.purpose.heading}
+        </h2>
+        <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-body">
+          {POSITION.purpose.body}
+        </p>
+      </section>
+
       {/* ── Role detail ──────────────────────────────────────────────────── */}
       <section className="mt-6 grid gap-6 md:grid-cols-2">
         <RoleList title="What you'll do" items={POSITION.responsibilities} />
         <RoleList title="What we're looking for" items={POSITION.requirements} />
+      </section>
+
+      {/* ── What the company provides ────────────────────────────────────── */}
+      <section className="mt-6">
+        <RoleList title="What we provide" items={POSITION.provided} />
       </section>
 
       {/* ── Application form ─────────────────────────────────────────────── */}
@@ -76,7 +91,9 @@ export default function CareersPage() {
           <strong className="font-semibold text-[#5a4415]">Applicant Safety Notice:</strong>{' '}
           Applicants should independently verify recruitment communications through the
           company&apos;s official channels. No applicant should be required to pay a fee to
-          apply for employment.
+          apply for employment. Training and work equipment are provided at our cost —
+          you will never be asked to buy equipment yourself, or to receive and forward
+          money on our behalf.
         </p>
       </aside>
     </div>
