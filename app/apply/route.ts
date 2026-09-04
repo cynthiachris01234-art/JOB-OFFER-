@@ -1,20 +1,10 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { RESUME_CONTENT_TYPES, RESUME_RULES, TIME_ZONES, type ResumeExtension } from '@/lib/data';
 import { notifyNewApplication } from '@/lib/notify';
+import { resumeBucket, serviceClient, storageConfigured } from '@/lib/supabase';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const supabaseUrl    = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
-const RESUME_BUCKET  = process.env.CAREERS_RESUME_BUCKET ?? 'job-applications';
-
-/** Applications carry personal data, so we never accept them unless there is a
- *  configured place to put them — a silent drop would lose someone's CV. */
-function storageConfigured(): boolean {
-  return Boolean(supabaseUrl && serviceRoleKey && !serviceRoleKey.includes('placeholder'));
-}
 
 function field(data: FormData, name: string): string {
   const value = data.get(name);
@@ -114,11 +104,11 @@ export async function POST(req: Request) {
     .toUpperCase()}`;
 
   try {
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    const supabase = serviceClient();
 
     const path = `${reference}/${safeFileName(resume.name)}`;
     const { error: uploadError } = await supabase.storage
-      .from(RESUME_BUCKET)
+      .from(resumeBucket())
       .upload(path, bytes, {
         contentType: RESUME_CONTENT_TYPES[extension],
         upsert: false,
@@ -145,7 +135,7 @@ export async function POST(req: Request) {
 
     if (insertError) {
       // Don't leave an orphaned file behind if the row could not be written.
-      await supabase.storage.from(RESUME_BUCKET).remove([path]).catch(() => {});
+      await supabase.storage.from(resumeBucket()).remove([path]).catch(() => {});
       console.error('Application insert error:', insertError);
       return bad('We could not save your application. Please try again in a moment.', 502);
     }

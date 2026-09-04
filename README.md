@@ -23,7 +23,7 @@ someone's CV.
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | yes | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_URL` *or* `SUPABASE_URL` | yes | Supabase project URL. Either name is accepted — it is only read on the server, so the `NEXT_PUBLIC_` prefix isn't required. |
 | `SUPABASE_SERVICE_ROLE_KEY` | yes | Service-role key — **server only**, never prefix with `NEXT_PUBLIC_` |
 | `CAREERS_RESUME_BUCKET` | no | Resume bucket name (default `job-applications`) |
 | `WHATSAPP_NUMBER` / `CALLMEBOT_API_KEY` | for WhatsApp | Notify this number of each new application |

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { createClient } from '@supabase/supabase-js';
 import { Download, FileText, Inbox, Mail, MapPin, Phone } from 'lucide-react';
+import { resumeBucket, serviceClient, storageConfigured } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 // force-dynamic alone only opts the route out of static rendering — Next still
@@ -14,9 +14,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const supabaseUrl    = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
-const RESUME_BUCKET  = process.env.CAREERS_RESUME_BUCKET ?? 'job-applications';
 
 /** Resume links are short-lived signed URLs — the bucket stays private. */
 const SIGNED_URL_TTL_SECONDS = 30 * 60;
@@ -69,13 +66,11 @@ async function loadApplications(): Promise<{
   links: Record<string, string>;
   error: string | null;
 }> {
-  if (!supabaseUrl || !serviceRoleKey || serviceRoleKey.includes('placeholder')) {
+  if (!storageConfigured()) {
     return { rows: [], links: {}, error: 'not-configured' };
   }
 
-  const supabase = createClient(supabaseUrl, serviceRoleKey, {
-    auth: { persistSession: false },
-  });
+  const supabase = serviceClient();
 
   const { data, error } = await supabase
     .from('job_applications')
@@ -93,7 +88,7 @@ async function loadApplications(): Promise<{
 
   if (rows.length) {
     const { data: signed } = await supabase.storage
-      .from(RESUME_BUCKET)
+      .from(resumeBucket())
       .createSignedUrls(rows.map(r => r.resume_path), SIGNED_URL_TTL_SECONDS);
 
     for (const entry of signed ?? []) {
