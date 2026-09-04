@@ -63,8 +63,9 @@ export function buildMessage(app: ApplicationNotification): string {
 export async function notifyNewApplication(
   app: ApplicationNotification,
 ): Promise<NotifyResult> {
-  const phone = process.env.WHATSAPP_NUMBER;
-  const apiKey = process.env.CALLMEBOT_API_KEY;
+  // Numbers get copied in as "+44 7529 718679"; the relay wants no separators.
+  const phone = process.env.WHATSAPP_NUMBER?.replace(/[\s()\-.]/g, '');
+  const apiKey = process.env.CALLMEBOT_API_KEY?.trim();
   if (!phone || !apiKey) return { sent: false, reason: 'not-configured' };
 
   const url =
