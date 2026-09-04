@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink antialiased;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-2xl border border-line bg-white shadow-panel;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-line-field bg-white px-3.5 py-2.5 text-[15px]
+           text-ink-deep placeholder:text-[#9aa8b8] outline-none transition
+           focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20
+           disabled:bg-[#f6f8fa] disabled:text-faint;
+  }
+}
