@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import { RESUME_CONTENT_TYPES, RESUME_RULES, TIME_ZONES, type ResumeExtension } from '@/lib/data';
+import { notifyNewApplication } from '@/lib/notify';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -148,6 +149,21 @@ export async function POST(req: Request) {
       console.error('Application insert error:', insertError);
       return bad('We could not save your application. Please try again in a moment.', 502);
     }
+
+    // The application is safely stored by this point. Notifying is best-effort
+    // and never throws: a WhatsApp failure must not tell an applicant their
+    // submission failed.
+    await notifyNewApplication({
+      reference,
+      firstName,
+      lastName,
+      email,
+      phone,
+      location,
+      timezone,
+      experience: experience || null,
+      resumeName: resume.name,
+    });
 
     return NextResponse.json({ ok: true, reference });
   } catch (err) {

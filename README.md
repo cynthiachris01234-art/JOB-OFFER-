@@ -26,6 +26,7 @@ someone's CV.
 | `NEXT_PUBLIC_SUPABASE_URL` | yes | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | yes | Service-role key — **server only**, never prefix with `NEXT_PUBLIC_` |
 | `CAREERS_RESUME_BUCKET` | no | Resume bucket name (default `job-applications`) |
+| `WHATSAPP_NUMBER` / `CALLMEBOT_API_KEY` | for WhatsApp | Notify this number of each new application |
 | `ADMIN_USER` / `ADMIN_PASSWORD` | for `/admin` | Basic-auth credentials; with either unset, `/admin` is refused |
 | `NEXT_PUBLIC_SITE_URL` | no | Public URL, used for metadata |
 
@@ -56,6 +57,29 @@ browsers commonly report `application/octet-stream` for Word documents.
 
 If the row insert fails after the upload succeeds, the uploaded file is removed
 so no orphans accumulate.
+
+## WhatsApp notifications
+
+Each stored application triggers a WhatsApp message with the applicant's name,
+contact details, location, time zone, resume filename, a trimmed extract of
+their experience, and a link to `/admin` to download the CV.
+
+Delivery goes through [CallMeBot](https://www.callmebot.com/blog/free-api-whatsapp-messages/):
+message **+34 644 51 95 23** on WhatsApp with *"I allow callmebot to send me
+messages"*, and it replies with the API key for `CALLMEBOT_API_KEY`. Put your
+own number in `WHATSAPP_NUMBER` in international format.
+
+Two things worth knowing:
+
+- **Notifying never blocks a submission.** The applicant's data is stored first;
+  if WhatsApp is unreachable the failure is logged, the request still succeeds,
+  and the application is waiting in `/admin`. Treat WhatsApp as an alert, not as
+  the system of record.
+- **The message passes through CallMeBot's servers,** so the applicant's contact
+  details reach a third party. The resume itself never leaves Supabase — only a
+  link does. To avoid the relay entirely you would need the official WhatsApp
+  Cloud API or Twilio, both of which require an approved message template for
+  business-initiated messages.
 
 ## Notes
 
