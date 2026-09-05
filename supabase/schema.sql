@@ -63,3 +63,11 @@ ON CONFLICT (id) DO NOTHING;
 --            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 --          ]
 --    WHERE id = 'job-applications';
+
+-- ─── ATTESTATIONS (migration) ────────────────────────────────────────────────
+-- Records the declarations an applicant ticks. Safe to run against an existing
+-- table; the app works with or without these columns, so run it when convenient.
+
+ALTER TABLE job_applications
+  ADD COLUMN IF NOT EXISTS over_18          BOOLEAN NOT NULL DEFAULT FALSE,
+  ADD COLUMN IF NOT EXISTS work_authorized  BOOLEAN NOT NULL DEFAULT FALSE;

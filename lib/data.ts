@@ -113,6 +113,20 @@ export const POSITION = {
     'company’s official contact channels.',
 } as const;
 
+/** Declarations an applicant must tick before submitting.
+ *
+ *  These replace asking for age or a home address. "18 or over" is the lawful
+ *  way to establish working age in US hiring — asking for a date of birth
+ *  invites age-discrimination liability under the ADEA — and work
+ *  authorisation is a standard pre-offer question. Neither reveals anything
+ *  that could be used to impersonate the applicant. */
+export const ATTESTATIONS = [
+  { name: 'over18', label: 'I am 18 years of age or older.' },
+  { name: 'workAuthorized', label: 'I am legally authorised to work in the United States.' },
+] as const;
+
+export type AttestationName = (typeof ATTESTATIONS)[number]['name'];
+
 /** Time-zone options offered in the application form. */
 export const TIME_ZONES = [
   'Eastern Time',

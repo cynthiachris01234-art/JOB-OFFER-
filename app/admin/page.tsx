@@ -34,6 +34,8 @@ interface Application {
   resume_size: number;
   status: string;
   created_at: string;
+  over_18?: boolean | null;
+  work_authorized?: boolean | null;
 }
 
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -193,6 +195,21 @@ export default async function AdminApplicationsPage() {
                   </span>
                 </p>
               </div>
+
+              {(row.over_18 || row.work_authorized) && (
+                <p className="mt-3 flex flex-wrap gap-2 text-xs">
+                  {row.over_18 && (
+                    <span className="rounded-full border border-[#bfe6cf] bg-[#f2fbf6] px-2.5 py-0.5 text-[#0a5c3a]">
+                      18 or over
+                    </span>
+                  )}
+                  {row.work_authorized && (
+                    <span className="rounded-full border border-[#bfe6cf] bg-[#f2fbf6] px-2.5 py-0.5 text-[#0a5c3a]">
+                      Authorised to work in the US
+                    </span>
+                  )}
+                </p>
+              )}
 
               {row.experience && (
                 <p className="mt-4 max-h-40 overflow-auto whitespace-pre-wrap rounded-xl bg-canvas-raised p-3 text-sm leading-relaxed text-body">

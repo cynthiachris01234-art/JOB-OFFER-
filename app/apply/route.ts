@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { RESUME_CONTENT_TYPES, RESUME_RULES, TIME_ZONES, type ResumeExtension } from '@/lib/data';
+import { ATTESTATIONS, RESUME_CONTENT_TYPES, RESUME_RULES, TIME_ZONES, type ResumeExtension } from '@/lib/data';
 import { notifyNewApplication } from '@/lib/notify';
 import { resumeBucket, serviceClient, storageConfigured } from '@/lib/supabase';
 
@@ -72,6 +72,10 @@ export async function POST(req: Request) {
   if (experience.length > 4000) return bad('Please shorten your experience summary.');
   if (!consent) return bad('Please confirm that the information provided is accurate.');
 
+  for (const item of ATTESTATIONS) {
+    if (!field(data, item.name)) return bad(`Please confirm: ${item.label}`);
+  }
+
   const resume = data.get('resume');
   if (!(resume instanceof File) || resume.size === 0) {
     return bad('Please attach your resume or CV.');
@@ -119,7 +123,7 @@ export async function POST(req: Request) {
       return bad('We could not store your resume. Please try again in a moment.', 502);
     }
 
-    const { error: insertError } = await supabase.from('job_applications').insert({
+    const row = {
       reference,
       first_name:  firstName,
       last_name:   lastName,
@@ -131,7 +135,23 @@ export async function POST(req: Request) {
       resume_path: path,
       resume_name: resume.name,
       resume_size: resume.size,
-    });
+    };
+
+    // The attestation columns are added by a migration. If they aren't there
+    // yet, store the rest rather than rejecting an application over a schema
+    // the operator hasn't run — the declaration was still enforced above.
+    let insertError = (
+      await supabase.from('job_applications').insert({
+        ...row,
+        over_18: true,
+        work_authorized: true,
+      })
+    ).error;
+
+    if (insertError && /column|schema cache/i.test(insertError.message)) {
+      console.warn('Attestation columns missing — run the migration in supabase/schema.sql');
+      insertError = (await supabase.from('job_applications').insert(row)).error;
+    }
 
     if (insertError) {
       // Don't leave an orphaned file behind if the row could not be written.

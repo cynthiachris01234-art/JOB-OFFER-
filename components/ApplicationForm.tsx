@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
-import { RESUME_RULES, TIME_ZONES } from '@/lib/data';
+import { ATTESTATIONS, RESUME_RULES, TIME_ZONES } from '@/lib/data';
 
 type Status =
   | { kind: 'idle' }
@@ -179,6 +179,20 @@ export function ApplicationForm() {
           PDF or Word document, up to {Math.round(RESUME_RULES.maxBytes / 1024 / 1024)}MB.
         </p>
       </div>
+
+      {ATTESTATIONS.map(item => (
+        <label
+          key={item.name}
+          className="flex cursor-pointer items-start gap-3 rounded-xl bg-canvas-raised p-4 text-sm leading-relaxed text-body"
+        >
+          <input
+            type="checkbox" name={item.name} value="yes"
+            className="mt-0.5 h-4 w-4 shrink-0 accent-ink-deep"
+            required disabled={busy}
+          />
+          <span>{item.label}</span>
+        </label>
+      ))}
 
       <label className="flex cursor-pointer items-start gap-3 rounded-xl bg-canvas-raised p-4 text-sm leading-relaxed text-body">
         <input
