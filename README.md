@@ -60,9 +60,14 @@ so no orphans accumulate.
 
 ## WhatsApp notifications
 
-Each stored application triggers a WhatsApp message with the applicant's name,
-contact details, location, time zone, resume filename, a trimmed extract of
-their experience, and a link to `/admin` to download the CV.
+Each stored application triggers a WhatsApp message with the applicant's
+reference, name, email, phone, location, time zone and resume filename — on one
+line, under 300 characters.
+
+That brevity is deliberate. CallMeBot's free relay delivers a short single-line
+message reliably but silently drops a long multi-line one — no error, nothing in
+the logs, no message. So the alert carries only what you need to decide whether
+to act now; the experience text and the CV itself are in `/admin`.
 
 Delivery goes through [CallMeBot](https://www.callmebot.com/blog/free-api-whatsapp-messages/):
 message **+34 644 51 95 23** on WhatsApp with *"I allow callmebot to send me

@@ -5,14 +5,13 @@
 // is already stored by the time this runs, so a failure here is logged and the
 // application still succeeds.
 
-import { POSITION } from './data';
-import { siteUrl } from './site';
 
 const ENDPOINT = process.env.CALLMEBOT_ENDPOINT ?? 'https://api.callmebot.com/whatsapp.php';
 const TIMEOUT_MS = 8000;
 
-/** Longest slice of the applicant's own text to include in the message. */
-const EXPERIENCE_LIMIT = 400;
+/** Hard ceiling on the whole message. The relay drops long messages silently,
+ *  so this stays well inside what it will carry. */
+const MESSAGE_LIMIT = 300;
 
 export interface ApplicationNotification {
   reference: string;
@@ -39,25 +38,25 @@ function truncate(text: string, limit: number): string {
   return clean.length > limit ? `${clean.slice(0, limit - 1)}…` : clean;
 }
 
+/** Kept deliberately short and on one line.
+ *
+ *  CallMeBot's free relay delivers a brief single-line message reliably, but
+ *  silently drops the long multi-line version this used to send — no error, no
+ *  message. Tested against the live relay: the short form arrives, the long one
+ *  does not. So the alert carries only what you need to decide whether to act
+ *  now; the experience text and the CV are a tap away in /admin. */
 export function buildMessage(app: ApplicationNotification): string {
-  const base = siteUrl();
-
-  return [
-    `NEW APPLICATION ${app.reference}`,
-    '---',
-    `Position: ${POSITION.title}`,
-    `Name: ${app.firstName} ${app.lastName}`,
-    `Email: ${app.email}`,
-    `Phone: ${app.phone}`,
-    `Location: ${app.location} (${app.timezone})`,
-    `Resume: ${app.resumeName}`,
-    app.experience ? '---' : null,
-    app.experience ? `Experience: ${truncate(app.experience, EXPERIENCE_LIMIT)}` : null,
-    '---',
-    base ? `Open: ${base}/admin` : 'Open the admin page to download the resume.',
-  ]
-    .filter((line): line is string => line !== null)
-    .join('\n');
+  return truncate(
+    [
+      `NEW APPLICATION ${app.reference}`,
+      `${app.firstName} ${app.lastName}`,
+      app.email,
+      app.phone,
+      `${app.location} (${app.timezone})`,
+      `CV: ${app.resumeName}`,
+    ].join(' · '),
+    MESSAGE_LIMIT,
+  );
 }
 
 /** Sends arbitrary text and reports what the relay actually said. CallMeBot
