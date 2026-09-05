@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 };
 
 // Deliberately reports only whether things are set and whether they work —
-// never a secret's value. It sits behind the same Basic auth as /admin.
+// never a secret's value. It sits behind the same sign-in as /admin.
 
 type Check = { label: string; ok: boolean; detail: string };
 

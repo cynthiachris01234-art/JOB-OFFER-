@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Briefcase, Check, MapPin, Package, ShieldAlert } from 'lucide-react';
 import { ApplicationForm } from '@/components/ApplicationForm';
+import { JobPostingSchema } from '@/components/JobPostingSchema';
 import { COMPANY, POSITION } from '@/lib/data';
 
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export default function CareersPage() {
   return (
     <div className="mx-auto max-w-5xl px-5 py-10 md:py-14">
+      <JobPostingSchema />
       {/* ── Job header ───────────────────────────────────────────────────── */}
       <section className="panel p-6 md:p-8">
         <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-subtle">

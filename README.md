@@ -5,7 +5,9 @@ A standalone Next.js site for a single job posting and its application form.
 - `/` — the job posting and application form
 - `/apply` — `POST` endpoint that validates a submission, stores the resume in a
   private Supabase bucket and writes a `job_applications` row
-- `/admin` — the applications view, behind HTTP Basic auth
+- `/admin` — the applications view, behind a sign-in page
+- `/admin/status` — what the running deployment can see: every variable, the
+  database, the storage bucket, the deployed commit, and a WhatsApp test button
 
 ## Quick start
 
@@ -27,7 +29,7 @@ someone's CV.
 | `SUPABASE_SERVICE_ROLE_KEY` | yes | Service-role key — **server only**, never prefix with `NEXT_PUBLIC_` |
 | `CAREERS_RESUME_BUCKET` | no | Resume bucket name (default `job-applications`) |
 | `WHATSAPP_NUMBER` / `CALLMEBOT_API_KEY` | for WhatsApp | Notify this number of each new application |
-| `ADMIN_USER` / `ADMIN_PASSWORD` | for `/admin` | Basic-auth credentials; with either unset, `/admin` is refused |
+| `ADMIN_USER` / `ADMIN_PASSWORD` | for `/admin` | Sign-in credentials; with either unset, `/admin` is refused |
 | `NEXT_PUBLIC_SITE_URL` | no | Public URL, used for metadata |
 
 ### Database
@@ -85,6 +87,20 @@ Two things worth knowing:
   link does. To avoid the relay entirely you would need the official WhatsApp
   Cloud API or Twilio, both of which require an approved message template for
   business-initiated messages.
+
+## When something doesn't work
+
+Open `/admin/status`. It reports, from inside the running deployment, whether
+each variable is present, whether the `job_applications` table and the storage
+bucket are reachable, and **which commit is deployed** — the last of which
+answers "did my change actually go live?" without guesswork.
+
+It also decodes the `ref` claim from the Supabase key and compares it to the
+configured URL, so a key from the wrong project is reported as exactly that
+rather than as "signature verification failed".
+
+The **Send test message** button sends a real-format alert and prints the
+relay's status code and response body verbatim.
 
 ## Notes
 

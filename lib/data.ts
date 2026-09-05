@@ -104,6 +104,9 @@ export const POSITION = {
     ],
   },
 
+  /** Fed to the JobPosting structured data. Update when the ad is refreshed. */
+  postedDate: '2026-09-05',
+
   notice:
     'Levy Real Estate does not require applicants to pay a fee to apply for ' +
     'employment. Applicants should verify recruitment communications through the ' +
