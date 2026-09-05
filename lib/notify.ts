@@ -60,9 +60,13 @@ export function buildMessage(app: ApplicationNotification): string {
     .join('\n');
 }
 
-export async function notifyNewApplication(
-  app: ApplicationNotification,
-): Promise<NotifyResult> {
+/** Sends arbitrary text and reports what the relay actually said. CallMeBot
+ *  answers 200 with an explanatory body for several failure modes — a number
+ *  that never completed activation, a wrong key — so the body matters as much
+ *  as the status code. */
+export async function sendWhatsApp(
+  text: string,
+): Promise<NotifyResult & { status?: number; body?: string }> {
   // Numbers get copied in as "+44 7529 718679"; the relay wants no separators.
   const phone = process.env.WHATSAPP_NUMBER?.replace(/[\s()\-.]/g, '');
   const apiKey = process.env.CALLMEBOT_API_KEY?.trim();
@@ -70,18 +74,27 @@ export async function notifyNewApplication(
 
   const url =
     `${ENDPOINT}?phone=${encodeURIComponent(phone)}` +
-    `&text=${encodeURIComponent(buildMessage(app))}` +
+    `&text=${encodeURIComponent(text)}` +
     `&apikey=${encodeURIComponent(apiKey)}`;
 
   try {
     // A slow or unreachable relay must not hold up the applicant's response.
     const res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
-    if (!res.ok) {
-      const body = await res.text().catch(() => '');
-      console.error('WhatsApp notification rejected:', res.status, body.slice(0, 300));
-      return { sent: false, reason: 'failed', detail: `HTTP ${res.status}` };
+    const body = (await res.text().catch(() => '')).slice(0, 400);
+
+    // A 200 whose body describes a problem is still a failure.
+    const rejected = /error|invalid|not\s*(found|allowed|authorized)|apikey/i.test(body);
+    if (!res.ok || rejected) {
+      console.error('WhatsApp notification rejected:', res.status, body);
+      return {
+        sent: false,
+        reason: 'failed',
+        detail: `HTTP ${res.status}`,
+        status: res.status,
+        body,
+      };
     }
-    return { sent: true };
+    return { sent: true, status: res.status, body };
   } catch (err) {
     console.error('WhatsApp notification failed:', err);
     return {
@@ -90,4 +103,10 @@ export async function notifyNewApplication(
       detail: err instanceof Error ? err.message : 'unknown error',
     };
   }
+}
+
+export async function notifyNewApplication(
+  app: ApplicationNotification,
+): Promise<NotifyResult> {
+  return sendWhatsApp(buildMessage(app));
 }

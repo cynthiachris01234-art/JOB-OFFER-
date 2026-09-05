@@ -8,6 +8,7 @@ import {
   supabaseUrl,
 } from '@/lib/supabase';
 import { siteUrl } from '@/lib/site';
+import { WhatsAppTest } from './WhatsAppTest';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -167,6 +168,7 @@ export default async function StatusPage() {
       </div>
 
       <Table title="Configuration" rows={checks} />
+      <WhatsAppTest />
       <Table title="Build" rows={build} />
     </div>
   );
