@@ -31,10 +31,32 @@ function host(url: string): string {
   }
 }
 
+/** The project a URL like https://abcd.supabase.co belongs to. */
+function refFromUrl(url: string): string {
+  return host(url).split('.')[0] ?? '';
+}
+
+/** Supabase keys are JWTs carrying a "ref" claim naming their project. Reading
+ *  it lets us say "this key is for a different project" instead of leaving the
+ *  reader with Supabase's opaque "signature verification failed". */
+function refFromKey(key: string): string {
+  const payload = key.split('.')[1];
+  if (!payload) return '';
+  try {
+    const json = Buffer.from(payload.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString();
+    const claims = JSON.parse(json);
+    return typeof claims.ref === 'string' ? claims.ref : '';
+  } catch {
+    return '';
+  }
+}
+
 async function runChecks(): Promise<{ checks: Check[]; build: Check[] }> {
   const url = supabaseUrl();
   const key = serviceRoleKey();
   const bucket = resumeBucket();
+  const urlRef = refFromUrl(url);
+  const keyRef = refFromKey(key);
 
   const checks: Check[] = [
     {
@@ -44,8 +66,12 @@ async function runChecks(): Promise<{ checks: Check[]; build: Check[] }> {
     },
     {
       label: 'Service role key',
-      ok: Boolean(key),
-      detail: key ? `set (${key.length} characters)` : 'not set — needs SUPABASE_SERVICE_ROLE_KEY',
+      ok: Boolean(key) && (!keyRef || !urlRef || keyRef === urlRef),
+      detail: !key
+        ? 'not set — needs SUPABASE_SERVICE_ROLE_KEY'
+        : keyRef && urlRef && keyRef !== urlRef
+          ? `set, but it belongs to Supabase project "${keyRef}" while the URL points at "${urlRef}" — copy both from the same project`
+          : `set (${key.length} characters)${keyRef ? ` · project ${keyRef}` : ''}`,
     },
     {
       label: 'Resume bucket name',
