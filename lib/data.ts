@@ -1,6 +1,7 @@
 // ─── Careers content ──────────────────────────────────────────────────────────
-// Single source of truth for the /careers page. Edit the values here to change
-// the posting — the page, the JSON-LD and the application form all read from it.
+// Single source of truth for the careers page. Edit the values here to change
+// the posting — the page, its metadata and the application form all read from
+// it, so nothing needs touching in the layout.
 
 export const COMPANY = {
   name: 'Levy Real Estate',
@@ -9,50 +10,104 @@ export const COMPANY = {
 } as const;
 
 export const POSITION = {
-  title: 'Client Services Associate',
-  department: 'Client Services',
-  employmentType: 'Full-time',
-  workplace: 'Remote (United States)',
+  title: 'Remote Property Data Entry Assistant — USA',
+  department: 'Property Operations',
+  employmentType: 'Full-time / Part-time',
+  workplace: 'United States — Remote',
+
+  aboutHeading: 'About the role',
   summary:
-    'Support our client services team with scheduling, listing coordination and ' +
-    'day-to-day communication with buyers, sellers and agents. Training is provided, ' +
-    'so this is a good fit for someone organised and personable who is early in their career.',
-  responsibilities: [
-    'Respond to client enquiries by email and phone during your scheduled hours.',
-    'Coordinate viewings, follow-ups and calendar updates for the agent team.',
-    'Keep listing details, documents and contact records accurate and up to date.',
-    'Prepare simple weekly summaries of open enquiries and their status.',
-  ],
-  requirements: [
-    'Reliable internet connection and a quiet place to work during your shift.',
-    'Clear written and spoken English.',
-    'Comfortable with email, spreadsheets and a shared calendar.',
-    'No prior real estate experience required — training is provided.',
-  ],
+    'Levy Real Estate is seeking a detail-oriented individual to support our ' +
+    'property operations team with the accurate entry and maintenance of property ' +
+    'information across our digital systems.',
+
   /** Rendered as the highlight strip under the job title. */
   highlights: [
-    { label: 'Training', value: 'Paid Training' },
-    { label: 'Pay Rate', value: '$40 / Hour', emphasis: true },
+    { label: 'Training', value: 'Provided' },
+    { label: 'Paid Training', value: '$40 per hour', emphasis: true },
     { label: 'Experience', value: 'Entry level welcome' },
   ],
-  /** "Why this role exists" — shown above the responsibilities. */
-  purpose: {
-    heading: 'Why we are hiring for this role',
-    body:
-      'Our team works from outside the United States, while a growing share of ' +
-      'our listings and the clients interested in them are based in the US. That ' +
-      'distance shows up as slow replies: an enquiry that arrives during the ' +
-      'American working day can sit until our office opens. This role closes that ' +
-      'gap. Working from a US time zone, you are online while our American clients ' +
-      'are, so questions about our US listings get answered the same day, in local ' +
-      'hours, by someone easy to reach.',
-  },
-  /** What the company provides to the person hired. */
-  provided: [
-    'Paid training from the start — we teach the listings, the systems and the way we handle client enquiries, so no real estate background is needed.',
-    'The equipment for the role, supplied and set up for you before your first shift.',
-    'Working hours set in your own US time zone, matched to the clients you look after.',
+
+  responsibilities: [
+    'Enter property information into company databases',
+    'Update listing details, prices and availability',
+    'Upload and organize property photographs and descriptions',
+    'Review records for accuracy and completeness',
+    'Maintain spreadsheets and digital property records',
+    'Follow established data-entry and quality-control procedures',
+    'Communicate with the property operations team regarding listing updates',
   ],
+
+  requirements: [
+    'Strong attention to detail',
+    'Basic computer skills',
+    'Comfortable working with spreadsheets and online systems',
+    'Good written communication',
+    'Reliable internet connection',
+    'Ability to work independently in a remote environment',
+  ],
+  requirementsNote:
+    'Previous real-estate or data-entry experience is helpful but not essential.',
+
+  provided: {
+    heading: 'What we provide',
+    paragraphs: [
+      'Successful candidates will receive the systems, software and equipment ' +
+        'required for the role, where applicable. Company-provided equipment will be ' +
+        'supplied through Levy Real Estate’s established onboarding process.',
+      'Training and onboarding will be provided before the employee begins ' +
+        'independent work.',
+    ],
+  },
+
+  compensation: {
+    heading: 'Compensation & Training',
+    payLabel: 'Paid Training',
+    payValue: '$40 per hour',
+    paragraphs: [
+      'Selected candidates will receive paid training as part of the onboarding ' +
+        'process. The company will provide the equipment and systems required for the ' +
+        'position through its standard employee onboarding process.',
+    ],
+  },
+
+  equipment: {
+    heading: 'Equipment Provided',
+    intro: 'Where required for the position, company equipment may include:',
+    items: [
+      'Company laptop',
+      'External monitor',
+      'Professional headset',
+      'Keyboard and mouse',
+      'Webcam',
+      'Required software and systems',
+      'Security/authentication equipment',
+      'Other necessary work accessories',
+    ],
+    notes: [
+      'Equipment will be provided through the company’s established delivery and ' +
+        'onboarding process.',
+      'No payment is required to apply for or participate in the training.',
+    ],
+  },
+
+  application: {
+    heading: 'Application',
+    intro: 'Interested candidates should submit:',
+    items: [
+      'Full name',
+      'Email address',
+      'Phone number',
+      'Current U.S. location',
+      'CV/resume',
+      'Relevant experience',
+    ],
+  },
+
+  notice:
+    'Levy Real Estate does not require applicants to pay a fee to apply for ' +
+    'employment. Applicants should verify recruitment communications through the ' +
+    'company’s official contact channels.',
 } as const;
 
 /** Time-zone options offered in the application form. */
